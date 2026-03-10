@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block title %}Team Login - IPL Mock Auction{% endblock %}
+{% block content %}
+<h1>🏏 Welcome Back</h1>
+<h2>Access Your Team Dashboard</h2>
+<p>Continue building your dream IPL squad!</p>
+
+<form method="post">
+    <label for="team">Your Team Name</label>
+    <input type="text" id="team" name="team" required placeholder="e.g., RCB, CSK, MI">
+
+    <label for="password">Team Password</label>
+    <input type="password" id="password" name="password" required placeholder="Enter your password">
+
+    <button type="submit" class="glow">Enter Auction Arena</button>
+</form>
+
+<div style="margin-top: 30px; text-align: center; opacity: 0.8;">
+    <p>Don't have a team yet? <a href="{{ url_for('main.register') }}" style="color: #ff6b35;">Register here</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block title %}{{ team }} Dashboard - IPL Mock Auction{% endblock %}
+{% block content %}
+<h1>🏏 {{ team }} Squad</h1>
+<h2>Your Auction Dashboard</h2>
+
+<div class="player-count">
+    <strong>Players Acquired: {{ bought_count }}/15</strong>
+    {% if bought_count >= 15 %}
+        <div class="alert warning slide-up" style="margin-top: 15px;">
+            🎉 Congratulations! You've completed your squad of 15 players!
+        </div>
+    {% endif %}
+</div>
+
+<div class="wallet-display">
+    💰 Available Budget: {{ format_currency(wallet) }}
+</div>
+
+{% if players %}
+<h3>Current Squad</h3>
+<table>
+    <tr><th>Player Name</th><th>Acquisition Cost</th></tr>
+    {% for p in players %}
+    <tr>
+        <td>{{ p.name }}</td>
+        <td>{{ format_currency(p.price) }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<div style="text-align: center; padding: 40px; opacity: 0.7;">
+    <h3>🏏 No players yet!</h3>
+    <p>Your squad is empty. Wait for the admin to add players to the auction pool.</p>
+</div>
+{% endif %}
+
+<div style="margin-top: 30px; text-align: center; opacity: 0.8;">
+    <p>📊 Keep an eye on your wallet and build the perfect team!</p>
+    <p>🎯 Target: 15 players | 💡 Tip: Balance your budget wisely</p>
+</div>
+{% endblock %}

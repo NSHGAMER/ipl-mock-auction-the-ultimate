@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %}Admin Login - IPL Mock Auction{% endblock %}
+{% block content %}
+<h1>Admin Access</h1>
+<h2>Secure Login Portal</h2>
+<form method="post">
+    <label for="username">Administrator Username</label>
+    <input type="text" id="username" name="username" required placeholder="Enter admin username">
+
+    <label for="password">Administrator Password</label>
+    <input type="password" id="password" name="password" required placeholder="Enter admin password">
+
+    <button type="submit" class="glow">Access Admin Panel</button>
+</form>
+{% endblock %}

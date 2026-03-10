@@ -1,0 +1,22 @@
+Sample Player List - Copy the content below into your PDF:
+
+Virat Kohli | Batsman
+Rohit Sharma | Batsman
+Jasprit Bumrah | Bowler
+Hardik Pandya | All-rounder
+Ravichandran Ashwin | All-rounder
+KL Rahul | Batsman
+Yuzvendra Chahal | Bowler
+Riyan Parag | All-rounder
+Sanju Samson | Batsman
+Suryakumar Yadav | Batsman
+Mohammed Siraj | Bowler
+Deepak Hooda | All-rounder
+Rashid Khan | All-rounder
+Ibrahim Zadran | Batsman
+Glenn Maxwell | All-rounder
+
+Instructions:
+1. Create a PDF with each player on a new line
+2. Format: Player Name | Role (Batsman/Bowler/All-rounder)
+3. Upload via Admin Panel > Upload & Parse Players button

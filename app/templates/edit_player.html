@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% block title %}Edit Player - IPL Mock Auction{% endblock %}
+{% block content %}
+<div class="edit-player-container">
+    <h1>✏️ Edit Player Details</h1>
+    
+    <div class="edit-form-wrapper">
+        <form method="post" action="{{ url_for('main.admin_edit_player', row=player.row) }}" class="edit-form">
+            <div class="form-section">
+                <label for="name">Player Name</label>
+                <input type="text" id="name" name="name" value="{{ player.name }}" required 
+                       placeholder="Enter player name" class="form-input">
+            </div>
+
+            <div class="form-section">
+                <label for="team">Team Assignment</label>
+                <input type="text" id="team" name="team" value="{{ player.team }}" required 
+                       placeholder="e.g., RCB, CSK, MI" class="form-input">
+            </div>
+
+            <div class="form-section">
+                <label for="price">Player Price</label>
+                <input type="text" id="price" name="price" value="{{ player.price }}" required 
+                       placeholder="e.g., 10cr or 100000000" class="form-input">
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-save">💾 Save Changes</button>
+                <a href="{{ url_for('main.admin_dashboard') }}" class="btn-cancel">❌ Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.edit-player-container {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.edit-player-container h1 {
+    text-align: center;
+    margin-bottom: 30px;
+    font-size: 2em;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.edit-form-wrapper {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.15);
+}
+
+.edit-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.form-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-section label {
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #667eea;
+    font-size: 0.95em;
+}
+
+.form-input {
+    padding: 12px 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    background: white;
+    color: #333;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    background: #f9f9ff;
+}
+
+.form-input::placeholder {
+    color: #999;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    justify-content: center;
+}
+
+.btn-save {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+    transition: all 0.3s ease;
+    flex: 1;
+}
+
+.btn-save:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 20px rgba(17, 153, 142, 0.3);
+}
+
+.btn-save:active {
+    transform: scale(0.98);
+}
+
+.btn-cancel {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.btn-cancel:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 20px rgba(235, 51, 73, 0.3);
+}
+
+.btn-cancel:active {
+    transform: scale(0.98);
+}
+
+@media (max-width: 768px) {
+    .edit-player-container h1 {
+        font-size: 1.5em;
+    }
+    
+    .edit-form-wrapper {
+        padding: 20px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn-save,
+    .btn-cancel {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

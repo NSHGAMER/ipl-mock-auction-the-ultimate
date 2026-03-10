@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Team Registration - IPL Mock Auction{% endblock %}
+{% block content %}
+<h1>🏏 Join the IPL Auction</h1>
+<h2>Register Your Team</h2>
+<p>Create your team profile to participate in the ultimate cricket auction experience!</p>
+
+<form method="post">
+    <label for="name">Team Representative Name</label>
+    <input type="text" id="name" name="name" required placeholder="Your full name">
+
+    <label for="college">Educational Institution</label>
+    <input type="text" id="college" name="college" required placeholder="College/University name">
+
+    <label for="team">IPL Team Choice</label>
+    <input type="text" id="team" name="team" required placeholder="e.g., RCB, CSK, MI, SRH">
+
+    <label for="password">Secure Password</label>
+    <input type="password" id="password" name="password" required placeholder="Create a strong password">
+
+    <button type="submit" class="glow">Register Team</button>
+</form>
+
+<div style="margin-top: 30px; text-align: center; opacity: 0.8;">
+    <p>💰 Starting Wallet: <strong>100 Crores</strong></p>
+    <p>🎯 Target: Build a squad of 15 players</p>
+</div>
+{% endblock %}

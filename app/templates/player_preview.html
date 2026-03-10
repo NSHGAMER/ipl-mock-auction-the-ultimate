@@ -1,0 +1,237 @@
+{% extends "base.html" %}
+
+{% block title %}Preview Players - IPL Mock Auction{% endblock %}
+
+{% block content %}
+<div class="preview-container">
+    <h1>📋 Player Upload Preview</h1>
+    <p class="subtitle">Review the extracted players before confirming upload</p>
+    
+    <div class="preview-info">
+        <p>File processed: <strong>{{ file_name }}</strong></p>
+        <p>Total players found: <strong>{{ players|length }}</strong></p>
+    </div>
+
+    {% if players %}
+        <div class="players-preview">
+            <table class="preview-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Player Name</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in players %}
+                    <tr class="preview-row">
+                        <td class="row-num">{{ loop.index }}</td>
+                        <td class="player-name">{{ player['name'] }}</td>
+                        <td>
+                            <span class="role-badge role-{{ player['role']|replace(' ', '-')|lower }}">
+                                {{ player['role'] }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="preview-actions">
+            <form method="post" action="{{ url_for('main.confirm_player_upload') }}" style="display:inline;">
+                <button type="submit" class="btn-confirm">✅ Confirm Upload</button>
+            </form>
+            
+            <form method="post" action="{{ url_for('main.cancel_player_upload') }}" style="display:inline;">
+                <button type="submit" class="btn-cancel">❌ Cancel</button>
+            </form>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>❌ No players could be extracted from the PDF</p>
+            <p class="text-secondary">Please check the file format and try again</p>
+        </div>
+        
+        <form method="post" action="{{ url_for('main.cancel_player_upload') }}">
+            <button type="submit" class="btn-cancel">Go Back</button>
+        </form>
+    {% endif %}
+</div>
+
+<style>
+.preview-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.preview-info {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 20px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.preview-info p {
+    margin: 8px 0;
+    font-size: 1.05em;
+}
+
+.subtitle {
+    color: #666;
+    font-size: 1.1em;
+    margin: 10px 0 20px 0;
+}
+
+.players-preview {
+    background: white;
+    border-radius: 8px;
+    padding: 20px;
+    margin: 20px 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
+}
+
+.preview-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.preview-table thead {
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    color: white;
+}
+
+.preview-table th {
+    padding: 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.preview-table tbody tr {
+    border-bottom: 1px solid #e0e0e0;
+    transition: all 0.3s ease;
+}
+
+.preview-table tbody tr:hover {
+    background: rgba(102, 126, 234, 0.05);
+}
+
+.preview-table td {
+    padding: 12px 15px;
+}
+
+.row-num {
+    color: #999;
+    font-weight: 600;
+    width: 40px;
+}
+
+.player-name {
+    font-weight: 500;
+    color: #333;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85em;
+    font-weight: 600;
+    color: white;
+}
+
+.role-batsman {
+    background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+}
+
+.role-bowler {
+    background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+}
+
+.role-all-rounder {
+    background: linear-gradient(135deg, #30cfd0 0%, #330867 100%);
+}
+
+.preview-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin: 30px 0;
+    flex-wrap: wrap;
+}
+
+.btn-confirm {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+    transition: all 0.3s ease;
+}
+
+.btn-confirm:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(17, 153, 142, 0.3);
+}
+
+.btn-cancel {
+    padding: 12px 30px;
+    background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel:hover {
+    transform: scale(1.05);
+    box-shadow: 0 5px 20px rgba(235, 51, 73, 0.3);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 40px;
+    background: #f5f5f5;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.empty-state p {
+    font-size: 1.1em;
+    margin: 10px 0;
+}
+
+.text-secondary {
+    color: #999;
+    font-size: 0.95em;
+}
+
+@media (max-width: 768px) {
+    .preview-table {
+        font-size: 0.9em;
+    }
+    
+    .preview-table th,
+    .preview-table td {
+        padding: 8px 10px;
+    }
+    
+    .preview-actions {
+        flex-direction: column;
+    }
+    
+    .btn-confirm,
+    .btn-cancel {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}

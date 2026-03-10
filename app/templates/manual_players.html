@@ -1,0 +1,256 @@
+{% extends 'base.html' %}
+{% block title %}Manual Player Entry - IPL Mock Auction{% endblock %}
+{% block content %}
+<div class="manual-entry-container">
+    <h1>✏️ Manual Player Entry</h1>
+    <p class="subtitle">Enter players in bulk when PDF upload doesn't work (e.g., scanned PDFs)</p>
+    
+    <div class="entry-wrapper">
+        <form method="post" action="{{ url_for('main.manual_upload_players') }}" class="manual-form">
+            <div class="format-guide">
+                <h3>📋 Supported Formats</h3>
+                <div class="format-examples">
+                    <div class="format-option">
+                        <h4>Format 1: Name | Role (Recommended)</h4>
+                        <pre>Virat Kohli | Batsman
+Jasprit Bumrah | Bowler
+Hardik Pandya | All-rounder
+MS Dhoni | Batsman</pre>
+                    </div>
+                    <div class="format-option">
+                        <h4>Format 2: Just Names (Defaults to Batsman)</h4>
+                        <pre>Virat Kohli
+Jasprit Bumrah
+Hardik Pandya
+MS Dhoni</pre>
+                    </div>
+                    <div class="format-option">
+                        <h4>Format 3: Space or Tab Separated</h4>
+                        <pre>Virat Kohli Batsman
+Jasprit Bumrah Bowler
+Hardik Pandya All-rounder</pre>
+                    </div>
+                </div>
+            </div>
+
+            <div class="entry-section">
+                <label for="players_text">📝 Enter Players (One per line)</label>
+                <textarea 
+                    id="players_text" 
+                    name="players_text" 
+                    placeholder="Paste your player list here...&#10;&#10;Example:&#10;Virat Kohli | Batsman&#10;Jasprit Bumrah | Bowler&#10;Rohit Sharma | Batsman"
+                    rows="15"
+                    class="players-textarea"
+                    required
+                ></textarea>
+                <p class="help-text">💡 Tip: Copy from Excel, Google Sheets, or any document and paste here</p>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn-submit">✅ Preview & Upload</button>
+                <a href="{{ url_for('main.admin_dashboard') }}" class="btn-back">← Back to Dashboard</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+.manual-entry-container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.manual-entry-container h1 {
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 2em;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.subtitle {
+    text-align: center;
+    color: #666;
+    font-size: 1.05em;
+    margin-bottom: 30px;
+}
+
+.entry-wrapper {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.15);
+}
+
+.manual-form {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.format-guide {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    border-left: 4px solid #667eea;
+}
+
+.format-guide h3 {
+    margin-top: 0;
+    color: #667eea;
+    font-size: 1.1em;
+}
+
+.format-examples {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.format-option {
+    background: #f9f9ff;
+    padding: 15px;
+    border-radius: 6px;
+    border: 1px solid #e0e0ff;
+}
+
+.format-option h4 {
+    margin: 0 0 10px 0;
+    color: #333;
+    font-size: 0.95em;
+}
+
+.format-option pre {
+    margin: 0;
+    background: #f0f0f0;
+    padding: 10px;
+    border-radius: 4px;
+    font-size: 0.85em;
+    overflow-x: auto;
+    color: #333;
+}
+
+.entry-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.entry-section label {
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #667eea;
+    font-size: 0.95em;
+}
+
+.players-textarea {
+    padding: 15px;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    font-family: 'Courier New', monospace;
+    font-size: 0.95em;
+    line-height: 1.6;
+    resize: vertical;
+    background: white;
+    color: #333;
+    transition: all 0.3s ease;
+}
+
+.players-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    background: #f9f9ff;
+}
+
+.players-textarea::placeholder {
+    color: #999;
+    white-space: pre;
+}
+
+.help-text {
+    margin: 10px 0 0 0;
+    color: #666;
+    font-size: 0.9em;
+}
+
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-submit {
+    flex: 1;
+    padding: 14px 30px;
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+    transition: all 0.3s ease;
+}
+
+.btn-submit:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 20px rgba(17, 153, 142, 0.3);
+}
+
+.btn-submit:active {
+    transform: scale(0.98);
+}
+
+.btn-back {
+    flex: 1;
+    padding: 14px 30px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 1em;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.btn-back:hover {
+    transform: scale(1.02);
+    box-shadow: 0 5px 20px rgba(102, 126, 234, 0.3);
+}
+
+@media (max-width: 768px) {
+    .manual-entry-container h1 {
+        font-size: 1.5em;
+    }
+    
+    .entry-wrapper {
+        padding: 20px;
+    }
+    
+    .format-examples {
+        grid-template-columns: 1fr;
+    }
+    
+    .players-textarea {
+        font-size: 0.85em;
+        min-height: 300px;
+    }
+    
+    .form-actions {
+        flex-direction: column;
+    }
+    
+    .btn-submit,
+    .btn-back {
+        width: 100%;
+    }
+}
+</style>
+{% endblock %}
