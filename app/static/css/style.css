@@ -1,11 +1,24 @@
-/* IPL Mock Auction - Modern Design */
+/* IPL Mock Auction - 3D Modern Design */
+* {
+    scroll-behavior: smooth;
+}
+
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    background: linear-gradient(-45deg, #1a1a2e, #16213e, #0f3460, #533483);
+    background-size: 400% 400%;
+    animation: gradient-shift 15s ease infinite;
     min-height: 100vh;
     color: #333;
+    perspective: 1000px;
+}
+
+@keyframes gradient-shift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .container {
@@ -15,36 +28,81 @@ body {
 }
 
 .card {
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 15px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    background: rgba(255, 255, 255, 0.85);
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 0 0 40px rgba(255, 107, 53, 0.1);
     padding: 30px;
     margin: 20px 0;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: translateZ(0);
+    position: relative;
+    overflow: hidden;
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+.card:hover {
+    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4), 0 0 50px rgba(255, 107, 53, 0.2);
+    transform: translateY(-10px) translateZ(50px);
 }
 
 h1, h2, h3 {
     color: #1e3c72;
     margin-bottom: 20px;
     font-weight: 700;
-    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 1;
 }
 
 h1 {
     font-size: 2.5em;
     text-align: center;
-    background: linear-gradient(45deg, #ff6b35, #f7931e);
+    background: linear-gradient(45deg, #ff6b35, #f7931e, #ff6b35);
+    background-size: 200% 200%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
     margin-bottom: 30px;
+    animation: gradient-wave 3s ease infinite;
+    letter-spacing: 1px;
+}
+
+@keyframes gradient-wave {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 h2 {
     font-size: 2em;
     border-bottom: 3px solid #ff6b35;
+    border-image: linear-gradient(90deg, #ff6b35, #f7931e) 1;
     padding-bottom: 10px;
+    position: relative;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: -3px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: linear-gradient(90deg, #ff6b35, #f7931e);
+    box-shadow: 0 0 10px rgba(255, 107, 53, 0.5);
 }
 
 form {
@@ -53,50 +111,83 @@ form {
     gap: 15px;
     max-width: 400px;
     margin: 0 auto;
+    perspective: 1000px;
 }
 
 label {
     font-weight: 600;
     color: #1e3c72;
     margin-bottom: 5px;
+    font-size: 0.95em;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-input[type="text"], input[type="password"] {
+input[type="text"], input[type="password"], input[type="email"] {
     padding: 12px 15px;
     border: 2px solid #e1e5e9;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 16px;
-    transition: all 0.3s ease;
-    background: rgba(255, 255, 255, 0.9);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: rgba(255, 255, 255, 0.95);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+    position: relative;
 }
 
-input[type="text"]:focus, input[type="password"]:focus {
+input[type="text"]:hover, input[type="password"]:hover, input[type="email"]:hover {
+    box-shadow: 0 8px 25px rgba(255, 107, 53, 0.15);
+    border-color: #ff6b35;
+    transform: translateY(-2px);
+}
+
+input[type="text"]:focus, input[type="password"]:focus, input[type="email"]:focus {
     outline: none;
     border-color: #ff6b35;
-    box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
-    transform: translateY(-2px);
+    box-shadow: 0 0 0 4px rgba(255, 107, 53, 0.15), 0 8px 25px rgba(255, 107, 53, 0.2);
+    transform: translateY(-3px) scale(1.01);
+    background: rgba(255, 255, 255, 1);
 }
 
 button {
     padding: 12px 25px;
-    background: linear-gradient(45deg, #ff6b35, #f7931e);
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 12px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 15px rgba(255, 107, 53, 0.3);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(255, 107, 53, 0.4), inset 0 -2px 0 rgba(0, 0, 0, 0.2);
+    position: relative;
+    overflow: hidden;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: left 0.3s ease;
+}
+
+button:hover::before {
+    left: 100%;
 }
 
 button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(255, 107, 53, 0.4);
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 15px 40px rgba(255, 107, 53, 0.5), inset 0 -2px 0 rgba(0, 0, 0, 0.3);
 }
 
 button:active {
-    transform: translateY(0);
+    transform: translateY(-1px) scale(1.02);
+    box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3), inset 0 -2px 0 rgba(0, 0, 0, 0.2);
 }
 
 table {
@@ -448,4 +539,341 @@ nav a:hover {
     to {
         box-shadow: 0 0 30px rgba(255, 107, 53, 0.8);
     }
+}
+
+/* ========== 3D PLAYER CARDS ========== */
+.players-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 25px;
+    margin: 25px 0;
+    perspective: 1000px;
+}
+
+.player-card {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.7));
+    border-radius: 16px;
+    padding: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15), 0 0 20px rgba(255, 107, 53, 0.05);
+    cursor: pointer;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform: translateZ(0) rotateX(0deg) rotateY(0deg);
+    position: relative;
+    overflow: hidden;
+    min-height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+
+.player-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(135deg, transparent 0%, rgba(255, 107, 53, 0.1) 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.player-card:hover {
+    transform: translateY(-15px) scale(1.08) rotateX(-5deg) rotateY(0deg);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25), 0 0 40px rgba(255, 107, 53, 0.2);
+}
+
+.player-card:hover::before {
+    opacity: 1;
+}
+
+.batsman-card {
+    background: linear-gradient(135deg, rgba(100, 200, 255, 0.7), rgba(0, 150, 255, 0.6));
+    border: 1px solid rgba(0, 150, 255, 0.3);
+}
+
+.bowler-card {
+    background: linear-gradient(135deg, rgba(255, 150, 0, 0.7), rgba(255, 100, 0, 0.6));
+    border: 1px solid rgba(255, 150, 0, 0.3);
+}
+
+.allrounder-card {
+    background: linear-gradient(135deg, rgba(150, 100, 255, 0.7), rgba(100, 50, 255, 0.6));
+    border: 1px solid rgba(150, 100, 255, 0.3);
+}
+
+.player-content {
+    text-align: center;
+    width: 100%;
+    z-index: 1;
+    position: relative;
+}
+
+.player-name {
+    font-size: 1.4em;
+    font-weight: 700;
+    color: white;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    letter-spacing: 0.5px;
+}
+
+.player-role {
+    margin: 10px 0 0 0;
+}
+
+.role-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.9em;
+    font-weight: 600;
+    background: rgba(255, 255, 255, 0.9);
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    transition: all 0.3s ease;
+}
+
+.role-badge.batsman {
+    color: #0096ff;
+}
+
+.role-badge.bowler {
+    color: #ff9600;
+}
+
+.role-badge.allrounder {
+    color: #9664ff;
+}
+
+/* Flip animation for cards */
+.flip-in {
+    animation: flipIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+}
+
+@keyframes flipIn {
+    0% {
+        transform: rotateY(90deg) scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: rotateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* ========== COLLEGE CARD STYLE ========== */
+.college-card {
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.9), rgba(247, 147, 30, 0.8));
+    border-radius: 20px;
+    padding: 40px 30px;
+    margin: 30px 0;
+    box-shadow: 0 20px 50px rgba(255, 107, 53, 0.3), 0 0 60px rgba(255, 107, 53, 0.15);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    position: relative;
+    overflow: hidden;
+    transform: perspective(1000px) rotateX(0deg);
+    transition: all 0.4s ease;
+}
+
+.college-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+    animation: shimmer 3s infinite;
+    pointer-events: none;
+}
+
+@keyframes shimmer {
+    0% {
+        transform: translate(-100%, -100%) rotate(0deg);
+    }
+    100% {
+        transform: translate(100%, 100%) rotate(45deg);
+    }
+}
+
+.college-header {
+    text-align: center;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+}
+
+.college-name {
+    color: white !important;
+    font-size: 2.8em !important;
+    margin: 0 0 10px 0 !important;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    letter-spacing: 2px;
+}
+
+.college-tagline {
+    color: rgba(255, 255, 255, 0.95);
+    font-size: 1.3em;
+    font-weight: 600;
+    margin: 0;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.college-description {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.05em;
+    line-height: 1.6;
+    position: relative;
+    z-index: 1;
+}
+
+/* ========== NAVIGATION 3D ========== */
+nav {
+    background: rgba(0, 0, 0, 0.3);
+    padding: 15px 0;
+    backdrop-filter: blur(15px);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    padding: 10px 20px;
+    border-radius: 25px;
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+    text-transform: uppercase;
+    font-size: 0.85em;
+    letter-spacing: 0.5px;
+}
+
+nav a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 107, 53, 0.3);
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+nav a:hover::before {
+    left: 0;
+}
+
+nav a:hover {
+    color: #ff6b35;
+    transform: translateY(-3px) scale(1.1);
+    box-shadow: 0 5px 20px rgba(255, 107, 53, 0.4);
+}
+
+/* ========== SECTION STYLES ========== */
+.role-section {
+    margin: 30px 0;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border-left: 4px solid #ff6b35;
+    transition: all 0.3s ease;
+}
+
+.role-section:hover {
+    background: rgba(255, 107, 53, 0.08);
+    box-shadow: 0 10px 30px rgba(255, 107, 53, 0.1);
+}
+
+.role-title {
+    color: #ff6b35 !important;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    border-bottom: 2px solid rgba(255, 107, 53, 0.3);
+    padding-bottom: 10px;
+}
+
+.section-title {
+    font-size: 1.8em;
+    text-align: center;
+    color: white !important;
+    margin-bottom: 30px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* ========== ENHANCED ALERTS ========== */
+.alert {
+    padding: 18px 24px;
+    margin: 15px 0;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+    backdrop-filter: blur(10px);
+    transform: translateX(0);
+}
+
+/* ========== ENHANCED TABLE STYLES ========== */
+table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 20px 0;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+}
+
+th {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    padding: 18px 15px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+td {
+    padding: 16px 15px;
+    border-bottom: 1px solid rgba(30, 60, 114, 0.1);
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+tr:hover {
+    background: rgba(255, 107, 53, 0.12);
+    transition: all 0.3s ease;
+    transform: scale(1.01);
+}
+
+/* ========== WALLET DISPLAY ========== */
+.wallet-display {
+    font-size: 1.6em;
+    font-weight: bold;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(247, 147, 30, 0.1));
+    color: #ff6b35;
+    text-align: center;
+    margin: 25px 0;
+    padding: 20px 15px;
+    border-radius: 15px;
+    border: 2px solid #ff6b35;
+    box-shadow: 0 10px 30px rgba(255, 107, 53, 0.2), 0 0 20px rgba(255, 107, 53, 0.1);
+    position: relative;
+    overflow: hidden;
 }
