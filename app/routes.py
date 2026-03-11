@@ -1,6 +1,8 @@
 from flask import Blueprint, current_app, render_template, redirect, url_for, request, session, flash
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
+import json
+import os
 
 bp = Blueprint('main', __name__)
 
@@ -33,16 +35,32 @@ import os
 from flask import abort
 
 def get_sheet():
-    cfg = current_app.config
-    creds_path = cfg.get("GSHEET_CREDENTIALS")
-    # if the path is relative, treat it as relative to the app package
-    if creds_path and not os.path.isabs(creds_path):
-        creds_path = os.path.join(current_app.root_path, creds_path)
-    if not creds_path or not os.path.isfile(creds_path):
-        abort(500, description=f"Google Sheets credentials file not found: {creds_path}.\n" \
-                                  "Create a service account JSON and set GSHEET_CREDENTIALS accordingly.")
     scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds = ServiceAccountCredentials.from_json_keyfile_name(creds_path, scope)
+    
+    # Try to load credentials from environment variable first (for production/Render)
+    creds_json = os.environ.get("GOOGLE_CREDENTIALS_JSON")
+    
+    if creds_json:
+        try:
+            creds_dict = json.loads(creds_json)
+            creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+        except (json.JSONDecodeError, ValueError) as e:
+            abort(500, description=f"Invalid GOOGLE_CREDENTIALS_JSON environment variable: {str(e)}")
+    else:
+        # Fallback to file-based credentials for local development
+        cfg = current_app.config
+        creds_path = cfg.get("GSHEET_CREDENTIALS")
+        
+        # if the path is relative, treat it as relative to the app package
+        if creds_path and not os.path.isabs(creds_path):
+            creds_path = os.path.join(current_app.root_path, creds_path)
+            
+        if not creds_path or not os.path.isfile(creds_path):
+            abort(500, description=f"Google Sheets credentials file not found: {creds_path}.\n" \
+                                      "Set GOOGLE_CREDENTIALS_JSON env var or place credentials.json in the app folder.")
+        
+        creds = ServiceAccountCredentials.from_json_keyfile_name(creds_path, scope)
+    
     client = gspread.authorize(creds)
     spreadsheet = client.open("ipl-mock-auction-the-ultimate")
     return spreadsheet
