@@ -3,9 +3,9 @@
 {% block title %}IPL Mock Auction - Auction Players{% endblock %}
 
 {% block content %}
-<div class="landing-main">
+<div class="landing-main" data-parallax="0.2">
     <!-- College Information Section -->
-    <div class="college-card slide-up">
+    <div class="college-card slide-up" data-parallax="0.4">
         <div class="college-header">
             <h1 class="college-name">🏏 {{ college.name }}</h1>
             <p class="college-tagline">{{ college.tagline }}</p>
@@ -16,7 +16,7 @@
     </div>
 
     <!-- Auction Players Section -->
-    <div class="auction-section bounce-in">
+    <div class="auction-section bounce-in" data-parallax="0.3">
         <h2 class="section-title">🎯 Available Players for Auction</h2>
         
         {% if players %}

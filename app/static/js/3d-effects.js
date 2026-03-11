@@ -12,6 +12,10 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Mouse tracking for 3D depth effect
     initializeMouseTracking();
+    
+    // scroll tilt and nav tilt
+    initializeScrollTilt();
+    initializeNavTilt();
 });
 
 // 3D Card Hover Effects
@@ -46,10 +50,41 @@ function initializeParallax() {
     if (parallaxElements.length === 0) return;
     
     window.addEventListener('scroll', function() {
+        const scrollY = window.pageYOffset;
         parallaxElements.forEach(element => {
-            const speed = element.dataset.parallax || 0.5;
-            const yPos = window.pageYOffset * speed;
-            element.style.transform = `translateY(${yPos}px)`;
+            const speed = parseFloat(element.dataset.parallax || 0.5);
+            const yPos = scrollY * speed;
+            element.style.transform = `translateY(${yPos}px) translateZ(-${scrollY * 0.1}px)`; // add subtle depth shift
+        });
+    });
+}
+
+// Rotate main container on scroll for 3D effect
+function initializeScrollTilt() {
+    const container = document.querySelector('.container');
+    if (!container) return;
+    window.addEventListener('scroll', () => {
+        const maxTilt = 5; // degrees
+        const scrollPct = window.pageYOffset / (document.body.scrollHeight - window.innerHeight);
+        const tilt = (scrollPct - 0.5) * maxTilt * 2; // center around 0
+        container.style.transform = `rotateX(${tilt}deg)`;
+    });
+}
+
+// add nav tilt on hover
+function initializeNavTilt() {
+    const navLinks = document.querySelectorAll('nav a');
+    navLinks.forEach(link => {
+        link.addEventListener('mousemove', (e) => {
+            const rect = link.getBoundingClientRect();
+            const x = e.clientX - rect.left - rect.width/2;
+            const y = e.clientY - rect.top - rect.height/2;
+            const tiltX = (y / rect.height) * 10;
+            const tiltY = (x / rect.width) * -10;
+            link.style.transform = `perspective(500px) rotateX(${tiltX}deg) rotateY(${tiltY}deg)`;
+        });
+        link.addEventListener('mouseleave', () => {
+            link.style.transform = '';
         });
     });
 }
