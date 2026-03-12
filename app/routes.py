@@ -15,18 +15,38 @@ def index():
     except gspread.exceptions.WorksheetNotFound:
         players = []
     
-    # Get college info from a settings sheet if available
-    college_info = {
-        'name': 'Your College Name',
-        'description': 'Welcome to the IPL Mock Auction - Build your dream team!',
-        'tagline': 'Experience the thrill of IPL player auction'
-    }
+    # Get college info from settings
+    college_info = get_college_info()
     
     return render_template('landing.html', players=players, college=college_info)
 
 
 def init_app(app_instance):
     app_instance.register_blueprint(bp)
+
+
+def get_college_info():
+    """Get college information from the settings worksheet"""
+    try:
+        settings_sheet = get_sheet().worksheet('settings')
+        records = settings_sheet.get_all_records()
+        if records:
+            record = records[0]
+            return {
+                'name': record.get('college_name', 'IPL Mock Auction'),
+                'description': record.get('description', 'Welcome to the IPL Mock Auction - Build your dream team!'),
+                'tagline': record.get('tagline', 'Experience the thrill of IPL player auction')
+            }
+    except (gspread.exceptions.WorksheetNotFound, Exception):
+        pass
+    
+    # Return default values if settings sheet doesn't exist
+    return {
+        'name': 'IPL Mock Auction',
+        'description': 'Welcome to the IPL Mock Auction - Build your dream team!',
+        'tagline': 'Experience the thrill of IPL player auction'
+    }
+
 
 
 # Utility functions
