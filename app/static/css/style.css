@@ -1636,4 +1636,197 @@ tr:hover {
     overflow: hidden;
 }
 
+/* ========== LANDING PAGE STYLES ========== */
+.landing-main {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 20px;
+}
+
+.auction-section {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 20px;
+    padding: 40px 30px;
+    margin: 40px 0;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+}
+
+.cta-section {
+    text-align: center;
+    margin: 50px 0 40px;
+    padding: 40px 20px;
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(30, 60, 114, 0.1));
+    border-radius: 20px;
+    border: 1px solid rgba(255, 107, 53, 0.2);
+}
+
+.cta-section h3 {
+    color: white !important;
+    font-size: 1.8em;
+    margin-bottom: 25px;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.cta-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.btn {
+    display: inline-block;
+    padding: 14px 28px;
+    border-radius: 12px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border: none;
+    cursor: pointer;
+    font-size: 1em;
+    letter-spacing: 0.5px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2);
+    transition: left 0.3s ease;
+    z-index: -1;
+}
+
+.btn:hover::before {
+    left: 100%;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #ff6b35, #f7931e);
+    color: white;
+    border: 2px solid #ff6b35;
+}
+
+.btn-primary:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 40px rgba(255, 107, 53, 0.5);
+    background: linear-gradient(135deg, #f7931e, #ff6b35);
+}
+
+.btn-secondary {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    border: 2px solid #1e3c72;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 15px 40px rgba(30, 60, 114, 0.5);
+    background: linear-gradient(135deg, #2a5298, #1e3c72);
+}
+
+.no-players {
+    text-align: center;
+    padding: 60px 20px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 15px;
+    border-left: 4px solid #ff6b35;
+}
+
+.no-players p {
+    color: white;
+    font-size: 1.2em;
+    margin: 10px 0;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.text-secondary {
+    color: rgba(255, 255, 255, 0.7) !important;
+    font-size: 1em;
+    opacity: 0.85;
+}
+
+.players-container {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+.player-count {
+    font-size: 1.2em;
+    text-align: center;
+    margin: 30px 0;
+    padding: 15px;
+    background: rgba(30, 60, 114, 0.1);
+    border-radius: 10px;
+    border-left: 4px solid #1e3c72;
+    color: white;
+}
+
+.player-count strong {
+    color: #ff6b35;
+    font-weight: 700;
+}
+
+/* ========== RESPONSIVE LANDING ========== */
+@media (max-width: 768px) {
+    .landing-main {
+        padding: 20px 10px;
+    }
+
+    .auction-section {
+        padding: 25px 15px;
+        margin: 20px 0;
+    }
+
+    .cta-section {
+        margin: 30px 0 20px;
+        padding: 25px 15px;
+    }
+
+    .cta-section h3 {
+        font-size: 1.4em;
+        margin-bottom: 15px;
+    }
+
+    .cta-buttons {
+        gap: 10px;
+    }
+
+    .btn {
+        padding: 12px 20px;
+        font-size: 0.9em;
+        flex: 1;
+        min-width: 200px;
+    }
+
+    .college-card {
+        padding: 30px 20px;
+        margin: 20px 0;
+    }
+
+    .college-name {
+        font-size: 2em !important;
+    }
+
+    .college-tagline {
+        font-size: 1.1em;
+    }
+
+    .section-title {
+        font-size: 1.4em;
+    }
+
+    .role-title {
+        font-size: 1.2em;
+    }
+}
+
 /* End of CSS */
