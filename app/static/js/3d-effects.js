@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mouse tracking for 3D depth effect
     initializeMouseTracking();
     
-    // scroll tilt and nav tilt
-    initializeScrollTilt();
+    // scroll tilt and nav tilt - disabled scroll tilt to fix animations
+    // initializeScrollTilt();
     initializeNavTilt();
 });
 
@@ -59,7 +59,8 @@ function initializeParallax() {
     });
 }
 
-// Rotate main container on scroll for 3D effect
+// Rotate main container on scroll for 3D effect - disabled to fix scroll animations
+/*
 function initializeScrollTilt() {
     const container = document.querySelector('.container');
     if (!container) return;
@@ -70,6 +71,7 @@ function initializeScrollTilt() {
         container.style.transform = `rotateX(${tilt}deg)`;
     });
 }
+*/
 
 // add nav tilt on hover
 function initializeNavTilt() {
@@ -110,7 +112,8 @@ function initializeEnhancedAnimations() {
             delay: anime.stagger(50)
         });
         
-        // Continuous floating animation
+        // Continuous floating animation - removed to fix animations
+        /*
         anime({
             targets: playerCards,
             translateY: [0, -10],
@@ -120,6 +123,7 @@ function initializeEnhancedAnimations() {
             loop: true,
             delay: anime.stagger(100)
         });
+        */
     }
 }
 
