@@ -400,6 +400,21 @@ nav a:hover {
     to { transform: rotate(360deg); }
 }
 
+/* Small footer credit - non-intrusive */
+.site-footer {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.78);
+    font-size: 0.95em;
+    margin: 20px 0 40px;
+}
+.site-footer p {
+    margin: 0;
+    opacity: 0.95;
+}
+.site-footer strong {
+    color: #ff6b35;
+}
+
 .fade-in {
     opacity: 0;
     animation: fadeIn 0.8s ease-out forwards;
