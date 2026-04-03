@@ -622,6 +622,11 @@ nav a:hover {
     margin: 0 0 10px 0 !important;
     text-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
     letter-spacing: 2px;
+    /* Ensure gradient text rules on generic h1 don't make this transparent */
+    -webkit-text-fill-color: white !important;
+    -webkit-background-clip: initial !important;
+    background-clip: initial !important;
+    background: none !important;
 }
 
 .college-tagline {
