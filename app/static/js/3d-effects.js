@@ -45,17 +45,53 @@ function initializeCardHoverEffects() {
 
 // Parallax Scrolling Effect
 function initializeParallax() {
-    const parallaxElements = document.querySelectorAll('[data-parallax]');
-    
+    const parallaxElements = Array.from(document.querySelectorAll('[data-parallax]'));
     if (parallaxElements.length === 0) return;
-    
-    window.addEventListener('scroll', function() {
-        const scrollY = window.pageYOffset;
+
+    // Apply will-change hint for better GPU handling
+    parallaxElements.forEach(el => el.style.willChange = 'transform');
+
+    // Throttle using requestAnimationFrame to avoid jank
+    let latestScrollY = 0;
+    let ticking = false;
+
+    function handleScroll(scrollY) {
         parallaxElements.forEach(element => {
-            const speed = parseFloat(element.dataset.parallax || 0.5);
-            const yPos = scrollY * speed;
-            element.style.transform = `translateY(${yPos}px) translateZ(-${scrollY * 0.1}px)`; // add subtle depth shift
+            const speed = Math.max(0, Math.min(1, parseFloat(element.dataset.parallax || 0.5)));
+            const yPos = scrollY * speed * 0.2; // scale down movement for subtlety
+            // Use translate3d to leverage GPU and avoid layout thrashing
+            element.style.transform = `translate3d(0, ${yPos}px, 0)`;
         });
+
+        // handle other scroll-driven animations consolidated here
+        // animate elements with data-scroll-animate
+        const scrollAnimate = document.querySelectorAll('[data-scroll-animate]');
+        scrollAnimate.forEach(element => {
+            const elementPosition = element.getBoundingClientRect().top;
+            const screenPosition = window.innerHeight / 1.3;
+            if (elementPosition < screenPosition) element.classList.add('active');
+        });
+
+        // glow effect for cards
+        const cards = document.querySelectorAll('.card');
+        cards.forEach(card => {
+            const rect = card.getBoundingClientRect();
+            const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+            if (isVisible) {
+                card.style.opacity = '1';
+            }
+        });
+    }
+
+    window.addEventListener('scroll', function() {
+        latestScrollY = window.pageYOffset;
+        if (!ticking) {
+            window.requestAnimationFrame(function() {
+                handleScroll(latestScrollY);
+                ticking = false;
+            });
+            ticking = true;
+        }
     });
 }
 
@@ -150,33 +186,7 @@ function initializeMouseTracking() {
     });
 }
 
-// Scroll animations
-window.addEventListener('scroll', function() {
-    const elements = document.querySelectorAll('[data-scroll-animate]');
-    
-    elements.forEach(element => {
-        const elementPosition = element.getBoundingClientRect().top;
-        const screenPosition = window.innerHeight / 1.3;
-        
-        if (elementPosition < screenPosition) {
-            element.classList.add('active');
-        }
-    });
-});
-
-// Add glow effect on scroll
-window.addEventListener('scroll', function() {
-    const cards = document.querySelectorAll('.card');
-    
-    cards.forEach(card => {
-        const rect = card.getBoundingClientRect();
-        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-        
-        if (isVisible) {
-            card.style.opacity = '1';
-        }
-    });
-});
+// Note: scroll-driven animations and glow are consolidated inside parallax handler
 
 // Animate on page load
 window.addEventListener('load', function() {

@@ -53,6 +53,11 @@ body::after {
     transform: none !important;
 }
 
+/* Hint to browser that parallax elements will be transformed */
+[data-parallax] {
+    will-change: transform;
+}
+
 .card {
     background: rgba(255, 255, 255, 0.85);
     border-radius: 20px;
