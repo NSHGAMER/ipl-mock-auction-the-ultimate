@@ -15,6 +15,40 @@ def index():
     except gspread.exceptions.WorksheetNotFound:
         players = []
     
+    # Normalize role values for display so variants like 'WICKET-KEEPER', 'Wk',
+    # 'Wicket Keeper' appear under the correct category without changing the sheet.
+    def _find_role_key(record):
+        for k in record.keys():
+            if k.lower() == 'role':
+                return k
+        return None
+
+    def _normalize_role_display(val):
+        if not val:
+            return 'Batsman'
+        s = str(val).strip().lower()
+        s = s.rstrip(':').strip()
+        if not s:
+            return 'Batsman'
+        if 'all' in s and ('round' in s or 'rounder' in s):
+            return 'All-rounder'
+        if 'allround' in s or 'all-round' in s or 'allrounder' in s:
+            return 'All-rounder'
+        if 'bowler' in s or 'pacer' in s or 'spinner' in s:
+            return 'Bowler'
+        # treat wicket-keeper as batsman category in UI
+        if 'keeper' in s or 'wk' in s or 'wicket' in s:
+            return 'Batsman'
+        if 'bat' in s or 'batsman' in s or 'batter' in s:
+            return 'Batsman'
+        return 'Batsman'
+
+    if players:
+        for rec in players:
+            rk = _find_role_key(rec)
+            if rk:
+                rec['Role'] = _normalize_role_display(rec.get(rk))
+    
     # Get college info from settings
     college_info = get_college_info()
     
