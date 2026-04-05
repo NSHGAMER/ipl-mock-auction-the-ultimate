@@ -532,6 +532,17 @@ nav a:hover {
     border: 1px solid rgba(150, 100, 255, 0.3);
 }
 
+/* Wicket-keeper card and badge styling */
+.wicketkeeper-card {
+    background: linear-gradient(135deg, rgba(255, 220, 200, 0.85), rgba(200, 200, 255, 0.75));
+    border: 1px solid rgba(150, 120, 200, 0.2);
+    color: #07122e;
+}
+
+.role-badge.wicketkeeper {
+    color: #7b2cbf; /* purple text for badge */
+}
+
 .player-content {
     text-align: center;
     width: 100%;
