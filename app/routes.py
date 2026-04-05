@@ -18,8 +18,9 @@ def index():
     # Normalize role values for display so variants like 'WICKET-KEEPER', 'Wk',
     # 'Wicket Keeper' appear under the correct category without changing the sheet.
     def _find_role_key(record):
+        # Find a key that refers to role. Accept variations like 'Role', ' role ', 'Player Role'
         for k in record.keys():
-            if k.lower() == 'role':
+            if 'role' in str(k).lower():
                 return k
         return None
 
@@ -36,9 +37,8 @@ def index():
             return 'All-rounder'
         if 'bowler' in s or 'pacer' in s or 'spinner' in s:
             return 'Bowler'
-        # treat wicket-keeper as batsman category in UI
         if 'keeper' in s or 'wk' in s or 'wicket' in s:
-            return 'Batsman'
+            return 'Wicket-keeper'
         if 'bat' in s or 'batsman' in s or 'batter' in s:
             return 'Batsman'
         return 'Batsman'
@@ -438,7 +438,7 @@ def parse_players_from_excel(file_storage):
         if 'bowler' in s or 'pacer' in s or 'spinner' in s:
             return 'Bowler'
         if 'keeper' in s or 'wk' in s or 'wicket' in s:
-            return 'Batsman'
+            return 'Wicket-keeper'
         if 'bat' in s or 'batsman' in s or 'batter' in s:
             return 'Batsman'
         # default
