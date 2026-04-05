@@ -20,6 +20,7 @@
                         <th>#</th>
                         <th>Player Name</th>
                         <th>Role</th>
+                        <th>Base Price</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -31,6 +32,13 @@
                             <span class="role-badge role-{{ player['role']|replace(' ', '-')|lower }}">
                                 {{ player['role'] }}
                             </span>
+                        </td>
+                        <td>
+                            {% if player.get('price') is not none and player.get('price') != '' %}
+                                {{ format_currency(player.get('price')) }}
+                            {% else %}
+                                -
+                            {% endif %}
                         </td>
                     </tr>
                     {% endfor %}

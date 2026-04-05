@@ -367,11 +367,29 @@ def parse_players_from_excel(file_storage):
     filename = getattr(file_storage, 'filename', '')
     ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
 
-    lines = []
+    players = []
+
+    def parse_price_value(val):
+        if val is None:
+            return None
+        if isinstance(val, (int, float)):
+            try:
+                return int(val)
+            except Exception:
+                return None
+        s = str(val).strip()
+        if not s:
+            return None
+        try:
+            return parse_price(s)
+        except Exception:
+            try:
+                return int(float(s))
+            except Exception:
+                return None
 
     # CSV handling
     if ext == 'csv':
-        # file_storage.stream may be at a non-zero position; read and decode
         data = file_storage.read()
         try:
             text = data.decode('utf-8')
@@ -381,38 +399,38 @@ def parse_players_from_excel(file_storage):
             except Exception:
                 text = ''
         for row in csv.reader(text.splitlines()):
-            # join cells with pipe so parser can pick role if present
-            if row:
-                lines.append(' | '.join(cell for cell in row if cell))
+            if not row:
+                continue
+            cells = [cell.strip() for cell in row]
+            name = cells[0] if len(cells) >= 1 else None
+            role = cells[1] if len(cells) >= 2 else None
+            price = parse_price_value(cells[2]) if len(cells) >= 3 else None
+            if name:
+                players.append({'name': name, 'role': role or 'Batsman', 'price': price})
 
     # XLSX handling
     elif ext == 'xlsx':
-        # Reset stream position just in case
         try:
             file_storage.stream.seek(0)
         except Exception:
             pass
         wb = load_workbook(filename=io.BytesIO(file_storage.read()), read_only=True, data_only=True)
-        # use first sheet
         sheet = wb[wb.sheetnames[0]]
         for row in sheet.iter_rows(values_only=True):
-            # row may be (name, role, ...)
             if not row:
                 continue
-            # collect non-empty cell values as strings
-            cells = [str(c).strip() for c in row if c is not None and str(c).strip()]
-            if not cells:
+            # normalize to strings where appropriate
+            cells = [c for c in row]
+            if len(cells) == 0:
                 continue
-            # If first two columns look like name and role, format as 'Name | Role'
-            if len(cells) >= 2:
-                lines.append(f"{cells[0]} | {cells[1]}")
-            else:
-                lines.append(cells[0])
+            name = str(cells[0]).strip() if cells[0] is not None else None
+            role = str(cells[1]).strip() if len(cells) > 1 and cells[1] is not None else None
+            price = parse_price_value(cells[2]) if len(cells) > 2 else None
+            if name:
+                players.append({'name': name, 'role': role or 'Batsman', 'price': price})
 
-    # Fallback - return parsed from joined lines
-    text_blob = '\n'.join(lines)
-    # If we got nothing useful, try treating the uploaded file as text
-    if not text_blob:
+    # If no structured players found, try fallback to text parsing
+    if not players:
         try:
             file_storage.stream.seek(0)
             raw = file_storage.read()
@@ -422,8 +440,12 @@ def parse_players_from_excel(file_storage):
                 text_blob = raw.decode('latin-1', errors='ignore')
         except Exception:
             text_blob = ''
+        # parse_players_from_text returns only name & role; add price=None
+        parsed = parse_players_from_text(text_blob)
+        for p in parsed:
+            players.append({'name': p.get('name'), 'role': p.get('role', 'Batsman'), 'price': None})
 
-    return parse_players_from_text(text_blob)
+    return players
 
 def extract_text_from_pdf(pdf_file):
     """Extract text from PDF file"""
@@ -550,7 +572,7 @@ def get_or_create_auction_sheet():
         worksheet = spreadsheet.worksheet('auction_players')
     except gspread.exceptions.WorksheetNotFound:
         worksheet = spreadsheet.add_worksheet(title='auction_players', rows=1000, cols=10)
-        worksheet.update('A1:B1', [['Player Name', 'Role']])
+        worksheet.update('A1:C1', [['Player Name', 'Role', 'Base Price']])
     return worksheet
 
 @bp.route('/admin/players/upload', methods=['POST'])
@@ -631,15 +653,22 @@ def confirm_player_upload():
         # Delete all rows except header
         if worksheet.row_count > 1:
             worksheet.delete_rows(2, worksheet.row_count)
-        
-        # Add new players
+
+        # Add new players (include base price if present)
         for player in players:
-            worksheet.append_row([player['name'], player['role']])
-        
+            name = player.get('name')
+            role = player.get('role', '')
+            price = player.get('price', '')
+            # write price only if present
+            if price is None or price == '':
+                worksheet.append_row([name, role])
+            else:
+                worksheet.append_row([name, role, price])
+
         # Clear session
         session.pop('pending_players', None)
         session.pop('pending_players_count', None)
-        
+
         flash(f'Successfully uploaded {len(players)} players!', 'success')
     except Exception as e:
         flash(f'Error saving players: {str(e)}', 'error')
