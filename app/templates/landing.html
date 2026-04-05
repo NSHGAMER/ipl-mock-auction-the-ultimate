@@ -23,6 +23,7 @@
             <div class="players-container">
                 <!-- Display by roles -->
                 {% set batsmen = players|selectattr('Role', 'equalto', 'Batsman')|list %}
+                {% set wicketkeepers = players|selectattr('Role', 'equalto', 'Wicket-keeper')|list %}
                 {% set bowlers = players|selectattr('Role', 'equalto', 'Bowler')|list %}
                 {% set allrounders = players|selectattr('Role', 'equalto', 'All-rounder')|list %}
                 
@@ -75,6 +76,25 @@
                                     <h3 class="player-name">{{ player['Player Name'] }}</h3>
                                     <p class="player-role">
                                         <span class="role-badge allrounder">⭐ All-rounder</span>
+                                    </p>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                {% endif %}
+                
+                <!-- Wicket-keepers Section -->
+                {% if wicketkeepers %}
+                <div class="role-section">
+                    <h3 class="role-title">🧤 Wicket-keepers ({{ wicketkeepers|length }})</h3>
+                    <div class="players-grid">
+                        {% for player in wicketkeepers %}
+                            <div class="player-card batsman-card flip-in">
+                                <div class="player-content">
+                                    <h3 class="player-name">{{ player['Player Name'] }}</h3>
+                                    <p class="player-role">
+                                        <span class="role-badge wicketkeeper">🧤 Wicket-keeper</span>
                                     </p>
                                 </div>
                             </div>
