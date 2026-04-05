@@ -654,16 +654,29 @@ def confirm_player_upload():
         if worksheet.row_count > 1:
             worksheet.delete_rows(2, worksheet.row_count)
 
-        # Add new players (include base price if present)
-        for player in players:
-            name = player.get('name')
-            role = player.get('role', '')
-            price = player.get('price', '')
-            # write price only if present
-            if price is None or price == '':
-                worksheet.append_row([name, role])
-            else:
-                worksheet.append_row([name, role, price])
+        # Prepare rows for batch append to avoid rate limits
+        has_price = any(p.get('price') not in (None, '') for p in players)
+        rows = []
+        if has_price:
+            for p in players:
+                name = p.get('name', '')
+                role = p.get('role', '')
+                price = p.get('price') if p.get('price') not in (None, '') else ''
+                rows.append([name, role, price])
+            # Ensure header includes Base Price (if sheet was created earlier without it, update header)
+            try:
+                header = worksheet.row_values(1)
+                if len(header) < 3:
+                    worksheet.update('A1:C1', [['Player Name', 'Role', 'Base Price']])
+            except Exception:
+                pass
+        else:
+            for p in players:
+                rows.append([p.get('name', ''), p.get('role', '')])
+
+        # Batch append rows in a single request
+        if rows:
+            worksheet.append_rows(rows, value_input_option='USER_ENTERED')
 
         # Clear session
         session.pop('pending_players', None)
