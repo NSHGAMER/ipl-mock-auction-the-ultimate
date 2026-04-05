@@ -349,13 +349,81 @@ def parse_price(txt):
 
 # PDF handling and auction player management
 import io
+import csv
 from PyPDF2 import PdfReader
+from openpyxl import load_workbook
 from werkzeug.utils import secure_filename
 
-ALLOWED_EXTENSIONS = {'pdf'}
+ALLOWED_EXTENSIONS = {'pdf', 'xlsx', 'csv'}
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+
+def parse_players_from_excel(file_storage):
+    """Parse players from uploaded Excel (.xlsx) or CSV file.
+    Returns list of {'name':..., 'role':...}
+    """
+    filename = getattr(file_storage, 'filename', '')
+    ext = filename.rsplit('.', 1)[1].lower() if '.' in filename else ''
+
+    lines = []
+
+    # CSV handling
+    if ext == 'csv':
+        # file_storage.stream may be at a non-zero position; read and decode
+        data = file_storage.read()
+        try:
+            text = data.decode('utf-8')
+        except Exception:
+            try:
+                text = data.decode('latin-1')
+            except Exception:
+                text = ''
+        for row in csv.reader(text.splitlines()):
+            # join cells with pipe so parser can pick role if present
+            if row:
+                lines.append(' | '.join(cell for cell in row if cell))
+
+    # XLSX handling
+    elif ext == 'xlsx':
+        # Reset stream position just in case
+        try:
+            file_storage.stream.seek(0)
+        except Exception:
+            pass
+        wb = load_workbook(filename=io.BytesIO(file_storage.read()), read_only=True, data_only=True)
+        # use first sheet
+        sheet = wb[wb.sheetnames[0]]
+        for row in sheet.iter_rows(values_only=True):
+            # row may be (name, role, ...)
+            if not row:
+                continue
+            # collect non-empty cell values as strings
+            cells = [str(c).strip() for c in row if c is not None and str(c).strip()]
+            if not cells:
+                continue
+            # If first two columns look like name and role, format as 'Name | Role'
+            if len(cells) >= 2:
+                lines.append(f"{cells[0]} | {cells[1]}")
+            else:
+                lines.append(cells[0])
+
+    # Fallback - return parsed from joined lines
+    text_blob = '\n'.join(lines)
+    # If we got nothing useful, try treating the uploaded file as text
+    if not text_blob:
+        try:
+            file_storage.stream.seek(0)
+            raw = file_storage.read()
+            try:
+                text_blob = raw.decode('utf-8')
+            except Exception:
+                text_blob = raw.decode('latin-1', errors='ignore')
+        except Exception:
+            text_blob = ''
+
+    return parse_players_from_text(text_blob)
 
 def extract_text_from_pdf(pdf_file):
     """Extract text from PDF file"""
@@ -494,38 +562,55 @@ def admin_upload_player_list():
     if 'pdf_file' not in request.files:
         flash('No file part', 'error')
         return redirect(url_for('main.admin_dashboard'))
-    
+
     file = request.files['pdf_file']
     if file.filename == '':
         flash('No selected file', 'error')
         return redirect(url_for('main.admin_dashboard'))
-    
+
     if not (file and allowed_file(file.filename)):
-        flash('Only PDF files are allowed', 'error')
+        flash('Only PDF, XLSX and CSV files are allowed', 'error')
         return redirect(url_for('main.admin_dashboard'))
-    
+
     try:
-        # Extract text from PDF
-        text = extract_text_from_pdf(file)
-        if not text:
-            flash('Could not extract text from PDF. It may be a scanned image. Try converting to searchable PDF.', 'error')
+        ext = file.filename.rsplit('.', 1)[1].lower()
+
+        if ext == 'pdf':
+            # Extract text from PDF
+            text = extract_text_from_pdf(file)
+            if not text:
+                flash('Could not extract text from PDF. It may be a scanned image. Try converting to searchable PDF.', 'error')
+                return redirect(url_for('main.admin_dashboard'))
+
+            # Parse players from text
+            players = parse_players_from_text(text)
+
+        elif ext in ('xlsx', 'csv'):
+            # Use new excel/csv parser
+            # ensure stream is at start
+            try:
+                file.stream.seek(0)
+            except Exception:
+                pass
+            players = parse_players_from_excel(file)
+
+        else:
+            flash('Unsupported file type', 'error')
             return redirect(url_for('main.admin_dashboard'))
-        
-        # Parse players from text
-        players = parse_players_from_text(text)
+
         if not players:
-            flash('No players found in PDF. Try a different format or use Manual Entry.', 'error')
+            flash('No players found in uploaded file. Try a different format or use Manual Entry.', 'error')
             return redirect(url_for('main.admin_dashboard'))
-        
+
         # Store in session for preview
         session['pending_players'] = players
         session['pending_players_count'] = len(players)
-        
+
         # Show preview
         return render_template('player_preview.html', players=players, file_name=file.filename)
-    
+
     except Exception as e:
-        flash(f'Error processing PDF: {str(e)}', 'error')
+        flash(f'Error processing file: {str(e)}', 'error')
         return redirect(url_for('main.admin_dashboard'))
 
 @bp.route('/admin/players/confirm', methods=['POST'])
