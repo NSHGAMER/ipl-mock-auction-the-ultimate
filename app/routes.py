@@ -388,6 +388,28 @@ def parse_players_from_excel(file_storage):
             except Exception:
                 return None
 
+    def normalize_role(role_val):
+        if not role_val:
+            return 'Batsman'
+        s = str(role_val).strip().lower()
+        # remove trailing punctuation
+        s = s.rstrip(':').strip()
+        if not s:
+            return 'Batsman'
+
+        if 'all' in s and ('round' in s or 'rounder' in s):
+            return 'All-rounder'
+        if 'allround' in s or 'all-round' in s or 'allrounder' in s:
+            return 'All-rounder'
+        if 'bowler' in s or 'pacer' in s or 'spinner' in s:
+            return 'Bowler'
+        if 'keeper' in s or 'wk' in s or 'wicket' in s:
+            return 'Batsman'
+        if 'bat' in s or 'batsman' in s or 'batter' in s:
+            return 'Batsman'
+        # default
+        return 'Batsman'
+
     # CSV handling
     if ext == 'csv':
         data = file_storage.read()
@@ -403,7 +425,7 @@ def parse_players_from_excel(file_storage):
                 continue
             cells = [cell.strip() for cell in row]
             name = cells[0] if len(cells) >= 1 else None
-            role = cells[1] if len(cells) >= 2 else None
+            role = normalize_role(cells[1]) if len(cells) >= 2 else 'Batsman'
             price = parse_price_value(cells[2]) if len(cells) >= 3 else None
             if name:
                 players.append({'name': name, 'role': role or 'Batsman', 'price': price})
@@ -424,7 +446,7 @@ def parse_players_from_excel(file_storage):
             if len(cells) == 0:
                 continue
             name = str(cells[0]).strip() if cells[0] is not None else None
-            role = str(cells[1]).strip() if len(cells) > 1 and cells[1] is not None else None
+            role = normalize_role(cells[1]) if len(cells) > 1 and cells[1] is not None else 'Batsman'
             price = parse_price_value(cells[2]) if len(cells) > 2 else None
             if name:
                 players.append({'name': name, 'role': role or 'Batsman', 'price': price})
